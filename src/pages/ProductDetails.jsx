@@ -1,45 +1,45 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import { Navigation } from "swiper/modules";
+import React, {useState} from "react";
+import { useParams } from "react-router-dom";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import { products } from "../assets/products";
 function ProductDetails() {
-  const product = {
-    id: 1,
-    title: "iPhone 9",
-    description: "An apple mobile which is nothing like apple",
-    price: 549,
-    discountPercentage: 12.96,
-    rating: 4.69,
-    stock: 94,
-    brand: "Apple",
-    category: "smartphones",
-    thumbnail: "https://cdn.dummyjson.com/product-images/1/thumbnail.jpg",
-    images: [
-      "https://cdn.dummyjson.com/product-images/1/1.jpg",
-      "https://cdn.dummyjson.com/product-images/1/2.jpg",
-      "https://cdn.dummyjson.com/product-images/1/3.jpg",
-      "https://cdn.dummyjson.com/product-images/1/4.jpg",
-      "https://cdn.dummyjson.com/product-images/1/thumbnail.jpg",
-    ],
-  };
+  const { id } = useParams();
+  const product = products.find(p => p.id == id);
+  const [inCart, setInCart] = useState(false);
+  const [quantity, setQuantity ] = useState(1);
+
+  function increase() {
+    setQuantity(quantity + 1);
+  }
+
+  function decrease() {
+    if (quantity == 1) {
+      setInCart(false)
+    } else {
+      setQuantity(quantity - 1);
+    }
+  }
 
   return (
-    <div>
-      <div>
-        <div>
+    <div className="flex-1 flex justify-center my-6">
+      <div className="flex space-x-6">
+        <div className="w-[400px] space-y-2">
           <img src={product.thumbnail} alt="" />
           <p>{product.description}</p>
         </div>
-        <div>
-          <div>
-            <p>{product.title}</p>
-            <p>{product.price} ₸</p>
-            <button>Добавить в корзину</button>
+        <div className="space-y-4 w-[300px]">
+          <div className="space-y-2 shadow-md p-2 rounded-lg">
+            <p className="text-3xl font-semibold">{product.title}</p>
+            <p className="text-2xl">{product.price} ₸</p>
+            {!inCart && <button className="bg-green-500 text-white rounded-lg py-2 px-10 w-full" onClick={() => setInCart(true)}>Добавить в корзину</button>}
+            {inCart && <div className="bg-green-500 text-white rounded-lg py-2 px-10 w-full">
+            <button onClick={decrease}>-</button>
+            <div>{product.price * quantity} ₸ - {quantity} шт</div>
+            <button onClick={increase}>+</button>
+            </div> }
           </div>
           <div>
-            <p>Бренд</p>
+            <p className="text-lg font-medium">Бренд</p>
             <p>{product.brand}</p>
           </div>
         </div>
